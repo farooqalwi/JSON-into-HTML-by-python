@@ -1,0 +1,3 @@
+[I 210924 01:36:41 main:23] hello world
+[I 210924 01:36:41 main:24] Namespace(arg='VU-Data/ChatExport_JSON', flag=False, name=None, verbose=0)
+[E 210924 01:36:41 main:29] path is a folder
