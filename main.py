@@ -73,32 +73,36 @@ def main(args):
         logger.error("sort order mismatch")
         sys.exit(1)
 
-    with open(outputPath, 'w', encoding='utf-8') as f:
-        f.write(f"""
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>JSON to HTML</title>
-                    </head>
-                    <body>
-                    <h1>{channelName}</h1>
-                    <a href="https://t.me/themuslimarchive">https://t.me/themuslimarchive</a>
-                    <p>{channelType}</p>
-                """)
-        for message in messages:
-            postID = message["id"]
-            postDate = message["date"]
-
+    try:
+        with open(outputPath, 'w', encoding='utf-8') as f:
             f.write(f"""
-                    <h2>Date: {postDate}</h2>
-                    <p>id: {postID}</p>
-                    <hr>
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>JSON to HTML</title>
+                        </head>
+                        <body>
+                        <h1>{channelName}</h1>
+                        <a href="https://t.me/themuslimarchive">https://t.me/themuslimarchive</a>
+                        <p>{channelType}</p>
                     """)
-
-        f.write("""
-                    </body>
-                </html>
-                """)
+            for message in messages:
+                postID = message["id"]
+                postDate = message["date"]
+    
+                f.write(f"""
+                        <h2>Date: {postDate}</h2>
+                        <p>id: {postID}</p>
+                        <hr>
+                        """)
+    
+            f.write("""
+                        </body>
+                    </html>
+                    """)
+    except FileNotFoundError:
+        logger.error("No such destination path exists here")
+        sys.exit(1)
     
     logger.info("HTML file created")
     sys.exit(0)
