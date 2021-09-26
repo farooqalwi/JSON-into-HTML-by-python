@@ -103,6 +103,47 @@ def main(args):
                             """)
                 else:
                     logger.error(f"image not found at Post ID: {postID}")
+                
+                text = message["text"]
+                if(text != ""):
+                    if(type(text) == str):
+                        f.write(f"""
+                                    <p>{text}</p>
+                                """)
+                    elif(type(text) == list):
+                        wholeText = ""
+                        for listText in text:
+                            if(listText != " "):
+                                if(type(listText) == str):
+                                    wholeText += listText
+                                elif(type(listText) == dict):
+                                    if(listText["type"] == "bold"):
+                                        wholeText+= f"""<strong>{listText["text"]}</strong>"""
+                                    elif(listText["type"] == "code"):
+                                        wholeText+= f"""<code>{listText["text"]}</code>"""
+                                    elif(listText["type"] == "italic"):
+                                        wholeText+= f"""<em>{listText["text"]}</em>"""
+                                    elif(listText["type"] == "underline"):
+                                        wholeText+= f"""<u>{listText["text"]}</u>"""
+                                    elif(listText["type"] == "strikethrough"):
+                                        wholeText+= f"""<s>{listText["text"]}</s>"""
+                                    elif(listText["type"] == "link"):
+                                        wholeText+= f"""<a href="{listText["text"]}">{listText["text"]}</a>"""
+                                    elif(listText["type"] == "text_link"):
+                                        wholeText+= f"""<a href="{listText["href"]}">{listText["text"]}</a>"""
+                                    elif(listText["type"] == "hashtag"):
+                                        wholeText+= f"""<a href="#" style="text-decoration:none">{listText["text"]} </a>"""
+                                    elif(listText["type"] == "mention"):
+                                        wholeText+= f"""<a href="https://t.me/{listText["text"][1:]}">{listText["text"]}</a>"""
+                                    elif(listText["type"] == "email"):
+                                        wholeText+= f"""<a href="mailto:{listText["text"]}">{listText["text"]}</a>"""
+                                    elif(listText["type"] == "phone"):
+                                        wholeText+= f"""<a href="tel:{listText["text"]}">{listText["text"]}</a>"""
+                        
+                        wholeText = wholeText.replace("\n", "<br>")
+                        f.write(f"""
+                                    <p>{wholeText}</p>
+                                """)
     
             f.write("""
                         </body>
