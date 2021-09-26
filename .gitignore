@@ -2,8 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-ChatExport_HTML/
-ChatExport_JSON/
 
 # C extensions
 *.so
