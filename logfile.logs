@@ -1,0 +1,2 @@
+[I 210926 17:53:04 main:22] hello world
+[I 210926 17:53:04 main:23] Namespace(arg='result.json', flag=False, name=None, verbose=0)
