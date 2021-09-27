@@ -9,16 +9,14 @@ repos:
     -   id: check-executables-have-shebangs
     -   id: check-json
     -   id: check-merge-conflict
-    -   id: check-symlinks
     -   id: check-vcs-permalinks
-    -   id: check-xml
     -   id: check-yaml
         args: [--unsafe]
     -   id: end-of-file-fixer
     -   id: fix-encoding-pragma
+        args: ['--remove']
     -   id: forbid-new-submodules
     -   id: requirements-txt-fixer
-    -   id: sort-simple-yaml
     -   id: trailing-whitespace
     -   id: no-commit-to-branch
         args: [-b master]
@@ -32,11 +30,6 @@ repos:
     hooks:
     -   id: prettier
         files: \.(html|md|markdown|json)
--   repo: https://github.com/hadialqattan/pycln
-    rev: v0.0.1-beta.3
-    hooks:
-    -   id: pycln
-        args: [--config=project.toml]
 -   repo: https://github.com/pycqa/isort
     rev: 5.5.4
     hooks:
@@ -70,7 +63,3 @@ repos:
     hooks:
     -   id: add-trailing-comma
         args: [--py36-plus]
--   repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.17.0
-    hooks:
-    -   id: setup-cfg-fmt
