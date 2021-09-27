@@ -21,7 +21,7 @@ repos:
     -   id: sort-simple-yaml
     -   id: trailing-whitespace
     -   id: no-commit-to-branch
-        args: [-b step-40]
+        args: [-b master]
 -   repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
