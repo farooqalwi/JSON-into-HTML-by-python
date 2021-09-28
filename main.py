@@ -22,7 +22,7 @@ def main(args):
     path = args.arg
 
     if(os.path.isdir(path)):
-        filePath = f"{path}\\result.json"
+        filePath = f"{os.path.join(path, 'result.json')}"
         if(os.path.isfile(filePath)):
             with open(filePath, "r", encoding='utf-8') as f:
                 json_file = json.load(f)
