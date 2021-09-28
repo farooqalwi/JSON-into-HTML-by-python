@@ -19,46 +19,25 @@ import os
 
 def main(args):
     """ Main entry point of the app """
-    sourceFilePath = args.arg
-    if(os.path.isdir(sourceFilePath)):
-        logger.error("Source path is a folder")
-        sys.exit(1)
-    elif(not os.path.isfile(sourceFilePath)):
-        logger.error("Source path does not exist")
-        sys.exit(1)
-    else:
-        with open(sourceFilePath, "r", encoding='utf-8') as f:
-            json_file = json.load(f)
-    
+    path = args.arg
 
+    if(os.path.isdir(path)):
+        filePath = f"{path}\\result.json"
+        if(os.path.isfile(filePath)):
+            with open(filePath, "r", encoding='utf-8') as f:
+                json_file = json.load(f)
+        else:
+            logger.error(f"<{path}> does not contain 'result.json' file")
+            sys.exit(1)
+    else:
+        logger.error("Path is not a folder")
+        sys.exit(1)
+    
     # for output file name, default file name is current timestamp from step 60 "output-2021-09-26 0110.html"
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H%M")
     defaultFileName = f"result-{dt_string}.html"
-
-    if(args.output != ""):
-        outputPath = args.output
-    else:
-        outputPath = defaultFileName
-
-    if(os.path.isdir(outputPath)):
-        # incase it is only folder then create output file with default file name
-        outputPath = f"{outputPath}\{defaultFileName}"
-        if(os.path.isfile(outputPath)):
-            logger.error("Output file is already present")
-            sys.exit(1)
-    elif(os.path.isfile(outputPath) or os.path.isfile(f"{outputPath}.html")):
-        logger.error("Output file is already present")
-        sys.exit(1)
-    elif(".html" not in outputPath):
-        # file name without extension creating in current directory
-        outputPath = f"{outputPath}.html"
-    elif(".html" in outputPath):
-        # incase full path with file name
-        outputPath = outputPath
-    elif(not os.path.isdir(outputPath)):
-        logger.error("Destination path does not exist")
-        sys.exit(1)
+    outputPath = f"{path}\\{defaultFileName}"
 
     
     # channel content
@@ -98,9 +77,16 @@ def main(args):
 
                 if("photo" in message.keys()):
                     photo = message["photo"]
-                    f.write(f"""
-                            <img src={photo} style="width: 260px; height: 251px"/>
-                            """)
+                    photoDir = photo[0:7]
+                    if(os.path.isdir(f"{path}\\{photoDir}")):
+                        if(os.path.isfile(f"{path}\\{photo}")):
+                            f.write(f"""
+                                    <img src={photo} style="width: 260px; height: 251px"/>
+                                    """)
+                        else:
+                            logger.error(f"<{photo}> image not found")
+                    else:
+                        logger.error(f"<{path}\\{photoDir}> directory not found")
                 else:
                     logger.error(f"image not found at Post ID: {postID}")
     
@@ -127,9 +113,6 @@ if __name__ == "__main__":
     # Required positional argument
     parser.add_argument("arg", help="Use for source file path, this is required.")
 
-    # for output path
-    parser.add_argument("-o", dest="output", default="", help="Use for output destination, default output path is current folder.")
-    
     # for sorting order, 'asc' for ascending, 'desc' for descending. by default sorted by 'desc'
     parser.add_argument("-s", dest="sort", default="desc", help="To sord post, use 'asc' for ascending, 'desc' for descending order. by default sorted by 'desc'")
 
