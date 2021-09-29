@@ -7,7 +7,7 @@ __author__ = "Your Name"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
-from abc import _FuncT
+
 import argparse
 from genericpath import isdir
 from logzero import logger, logfile
@@ -24,23 +24,19 @@ class FunctionFailed(Exception):
 def validatePath_folder(path):
     """this function validates user given folder path, 
     incase valid path returns the path"""
-    try:
-        if(os.path.isdir(path)):
-            return path
-        else:
-            logger.error("Path is not a folder")
-    except TypeError:
+    if(os.path.isdir(path)):
+        return path
+    else:
+        logger.error("Path is not a folder")
         raise FunctionFailed from Exception
 
 def isExist_JSON(folderPath):
     """it checks either 'json' file exists or not"""
-    try:
-        filePath = f"{os.path.join(folderPath, 'result.json')}"
-        if(os.path.isfile(filePath)):
-            return filePath
-        else:
-            logger.error(f"<{folderPath}> does not contain 'result.json' file")
-    except TypeError:
+    filePath = f"{os.path.join(folderPath, 'result.json')}"
+    if(os.path.isfile(filePath)):
+        return filePath
+    else:
+        logger.error(f"<{folderPath}> does not contain 'result.json' file")
         raise FunctionFailed from Exception
 
 def readJson(filePath):
@@ -53,16 +49,14 @@ def readJson(filePath):
             logger.error(f"Invalid JSON provided <{err}>")
             raise FunctionFailed from Exception
         return json_file
-    
+
 def sortData(messages):
     """it sorts the json data, 'asc' for ascending, 
     'desc' for descending. by default sorted by 'desc'"""
-    try:
-        if(args.sort == "desc"):
-            messages.reverse()
-        elif(args.sort != "asc"):
-            logger.error("sort order mismatch")
-    except Exception:
+    if(args.sort == "desc"):
+        messages.reverse()
+    elif(args.sort != "asc"):
+        logger.error("sort order mismatch")
         raise FunctionFailed from Exception
 
 def writeBasicInfo_Chennal(json_data):
@@ -103,6 +97,7 @@ def validateImage_HTML(folderPath, message, postID):
                 logger.error(f"<{photo}> image not found")
         else:
             logger.error(f"<{os.path.join(folderPath, photoDir)}> directory not found")
+            raise FunctionFailed from Exception
     else:
         logger.error(f"image not found at Post ID: {postID}")
 
@@ -144,40 +139,35 @@ def create_HTML(folderPath, json_data):
     messages = json_data["messages"]
     # to sort order od data
     sortData(messages)
-    try:
-        with open(outputFile(folderPath), 'w', encoding='utf-8') as f:
-            f.write(writeBasicInfo_Chennal(json_data))
-            for message in messages:
-                postID = message["id"]
-                postDate = message["date"]
-                f.write(f"""
-                        <hr>
-                        <h2>Date: {postDate}</h2>
-                        <p>id: {postID}</p>
-                        """)
-                photo = validateImage_HTML(folderPath, message, postID)
-                f.write(f"""
-                        <img src={photo} style="width: 260px; height: 251px"/>
-                        """)
-                text = message["text"]
-                if(text != ""):
-                    if(type(text) == str):
-                        f.write(f"""
-                                    <p>{text}</p>
-                                """)
-                    elif(type(text) == list):
-                        wholeText = writeText_HTML(text)
-                        f.write(f"""
-                                    <p>{wholeText}</p>
-                                """)
-            f.write("""
-                        </body>
-                    </html>
+    with open(outputFile(folderPath), 'w', encoding='utf-8') as f:
+        f.write(writeBasicInfo_Chennal(json_data))
+        for message in messages:
+            postID = message["id"]
+            postDate = message["date"]
+            f.write(f"""
+                    <hr>
+                    <h2>Date: {postDate}</h2>
+                    <p>id: {postID}</p>
                     """)
-    except FileNotFoundError:
-        logger.error("No such destination path exists here")
-        sys.exit(1)
-    
+            photo = validateImage_HTML(folderPath, message, postID)
+            f.write(f"""
+                    <img src={photo} style="width: 260px; height: 251px"/>
+                    """)
+            text = message["text"]
+            if(text != ""):
+                if(type(text) == str):
+                    f.write(f"""
+                                <p>{text}</p>
+                            """)
+                elif(type(text) == list):
+                    wholeText = writeText_HTML(text)
+                    f.write(f"""
+                                <p>{wholeText}</p>
+                            """)
+        f.write("""
+                    </body>
+                </html>
+                """)
     logger.info("HTML file created")
 
 def createLog():
