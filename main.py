@@ -227,9 +227,6 @@ if __name__ == "__main__":
     # Required positional argument
     parser.add_argument("arg", help="Use for source file path, this is required.")
 
-    # for output path
-    parser.add_argument("-o", dest="output", default="", help="Use for output destination, default output path is current folder.")
-    
     # for sorting order, 'asc' for ascending, 'desc' for descending. by default sorted by 'desc'
     parser.add_argument("-s", dest="sort", default="desc", help="To sord post, use 'asc' for ascending, 'desc' for descending order. by default sorted by 'desc'")
 
