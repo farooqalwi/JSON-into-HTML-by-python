@@ -150,9 +150,10 @@ def create_HTML(folderPath, json_data):
                     <p>id: {postID}</p>
                     """)
             photo = validateImage_HTML(folderPath, message, postID)
-            f.write(f"""
-                    <img src={photo} style="width: 260px; height: 251px"/>
-                    """)
+            if(photo is not None):
+                f.write(f"""
+                        <img src={photo} style="width: 260px; height: 251px"/>
+                        """)
             text = message["text"]
             if(text != ""):
                 if(type(text) == str):
@@ -206,7 +207,6 @@ def main(args):
     except FunctionFailed:
         logger.error("Program terminated unspectedly")
         sys.exit(1)
-
 
 
 if __name__ == "__main__":
