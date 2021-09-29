@@ -8,6 +8,7 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 import argparse
+from genericpath import isdir
 from logzero import logger, logfile
 import json
 import sys
@@ -162,9 +163,17 @@ def createHTML(folderPath, json_data):
 def createLog():
     """it creates log file, default file name is current timestamp 
     "log-20210928220001.log" year month date hour minute seconds"""
-    now = datetime.now()
-    dt_string = now.strftime("%Y%m%d%H%M%S")
-    logfile(os.path.join("logs", f"log-{dt_string}.log"))
+    if(not os.path.isdir("logs")):
+        os.mkdir("logs")
+        now = datetime.now()
+        dt_string = now.strftime("%Y%m%d%H%M%S")
+        logfile(os.path.join("logs", f"log-{dt_string}.log"))
+        logger.info("Logs folder created")
+    else:
+        now = datetime.now()
+        dt_string = now.strftime("%Y%m%d%H%M%S")
+        logfile(os.path.join("logs", f"log-{dt_string}.log"))
+
 
 def main(args):
     """ Main entry point of the app """
