@@ -11,10 +11,11 @@ import argparse
 from genericpath import exists, isdir, isfile
 from os import remove
 from logzero import logger, logfile
-from datetime import datetime
 import json
 import sys
 import os
+from datetime import datetime
+now = datetime.now()
 
 
 def main(args):
@@ -25,7 +26,11 @@ def main(args):
         filePath = f"{os.path.join(path, 'result.json')}"
         if(os.path.isfile(filePath)):
             with open(filePath, "r", encoding='utf-8') as f:
-                json_file = json.load(f)
+                try:
+                    json_file = json.load(f)
+                except json.decoder.JSONDecodeError as err:
+                    logger.error(f"Invalid JSON provided <{err}>")
+                    sys.exit(1)
         else:
             logger.error(f"<{path}> does not contain 'result.json' file")
             sys.exit(1)
@@ -34,7 +39,6 @@ def main(args):
         sys.exit(1)
     
     # for output file name, default file name is current timestamp from step 60 "output-2021-09-26 0110.html"
-    now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H%M")
     defaultFileName = f"result-{dt_string}.html"
     outputPath = f"{path}\\{defaultFileName}"
@@ -144,9 +148,9 @@ def main(args):
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
-    if(os.path.isfile('logfile.logs')):
-        remove('logfile.logs')
-    logfile('logfile.logs')
+    # for log file name, default file name is current timestamp "log-20210928220001.log" year month date hour minute seconds
+    dt_string = now.strftime("%Y%m%d%H%M%S")
+    logfile(os.path.join("logs", f"log-{dt_string}.log"))
     
     parser = argparse.ArgumentParser()
 
