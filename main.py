@@ -54,62 +54,101 @@ def sortData(messages):
         logger.error("sort order mismatch")
         sys.exit(1)
 
-def createHTML(folderPath, json_data):
-    """it creates the html file from json data"""
+def writeBasicInfo_Chennal(json_data):
+    """it writes the chennal basic info, 
+    i.e: chenal name, chennal type, chennal link"""
+    channelName = json_data["name"]
+    channelType = json_data["type"]
+    return (f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>JSON to HTML</title>
+                </head>
+                <body>
+                <h1>{channelName}</h1>
+                <a href="https://t.me/themuslimarchive">https://t.me/themuslimarchive</a>
+                <p>{channelType}</p>
+            """)
 
-    # for output file name, default file name is current 
-    # timestamp from step 60 "output-2021-09-26 0110.html"
+def outputFile(folderPath):
+    """for output file name, default file name is current
+    timestamp from step 60 'output-2021-09-26 0110.html' """
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H%M")
     defaultFileName = f"result-{dt_string}.html"
     outputPath = os.path.join(folderPath, defaultFileName)
+    return outputPath
 
-    # channel content
-    channelName = json_data["name"]
-    channelType = json_data["type"]
+def validateImage_HTML(folderPath, message, postID):
+    """it valliadtes images either present or not"""
+    if("photo" in message.keys()):
+        photo = message["photo"]
+        photoDir = photo[0:7]
+        if(os.path.isdir(os.path.join(folderPath, photoDir))):
+            if(os.path.isfile(os.path.join(folderPath, photo))):
+                return photo
+            else:
+                logger.error(f"<{photo}> image not found")
+        else:
+            logger.error(f"<{os.path.join(folderPath, photoDir)}> directory not found")
+    else:
+        logger.error(f"image not found at Post ID: {postID}")
+
+def writeText_HTML(text):
+    """it writes texts with respective formatting"""
+    wholeText = ""
+    for listText in text:
+        if(listText != " "):
+            if(type(listText) == str):
+                wholeText += listText
+            elif(type(listText) == dict):
+                if(listText["type"] == "bold"):
+                    wholeText+= f"""<strong>{listText["text"]}</strong>"""
+                elif(listText["type"] == "code"):
+                    wholeText+= f"""<code>{listText["text"]}</code>"""
+                elif(listText["type"] == "italic"):
+                    wholeText+= f"""<em>{listText["text"]}</em>"""
+                elif(listText["type"] == "underline"):
+                    wholeText+= f"""<u>{listText["text"]}</u>"""
+                elif(listText["type"] == "strikethrough"):
+                    wholeText+= f"""<s>{listText["text"]}</s>"""
+                elif(listText["type"] == "link"):
+                    wholeText+= f"""<a href="{listText["text"]}">{listText["text"]}</a>"""
+                elif(listText["type"] == "text_link"):
+                    wholeText+= f"""<a href="{listText["href"]}">{listText["text"]}</a>"""
+                elif(listText["type"] == "hashtag"):
+                    wholeText+= f"""<a href="#" style="text-decoration:none">{listText["text"]} </a>"""
+                elif(listText["type"] == "mention"):
+                    wholeText+= f"""<a href="https://t.me/{listText["text"][1:]}">{listText["text"]}</a>"""
+                elif(listText["type"] == "email"):
+                    wholeText+= f"""<a href="mailto:{listText["text"]}">{listText["text"]}</a>"""
+                elif(listText["type"] == "phone"):
+                    wholeText+= f"""<a href="tel:{listText["text"]}">{listText["text"]}</a>"""
+    wholeText = wholeText.replace("\n", "<br>")
+    return wholeText
+            
+
+def create_HTML(folderPath, json_data):
+    """it creates the html file from json data"""
     messages = json_data["messages"]
-
     # to sort order od data
     sortData(messages)
-
     try:
-        with open(outputPath, 'w', encoding='utf-8') as f:
-            f.write(f"""
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>JSON to HTML</title>
-                        </head>
-                        <body>
-                        <h1>{channelName}</h1>
-                        <a href="https://t.me/themuslimarchive">https://t.me/themuslimarchive</a>
-                        <p>{channelType}</p>
-                    """)
+        with open(outputFile(folderPath), 'w', encoding='utf-8') as f:
+            f.write(writeBasicInfo_Chennal(json_data))
             for message in messages:
                 postID = message["id"]
                 postDate = message["date"]
-    
                 f.write(f"""
                         <hr>
                         <h2>Date: {postDate}</h2>
                         <p>id: {postID}</p>
                         """)
-
-                if("photo" in message.keys()):
-                    photo = message["photo"]
-                    photoDir = photo[0:7]
-                    if(os.path.isdir(os.path.join(folderPath, photoDir))):
-                        if(os.path.isfile(os.path.join(folderPath, photo))):
-                            f.write(f"""
-                                    <img src={photo} style="width: 260px; height: 251px"/>
-                                    """)
-                        else:
-                            logger.error(f"<{photo}> image not found")
-                    else:
-                        logger.error(f"<{os.path.join(folderPath, photoDir)}> directory not found")
-                else:
-                    logger.error(f"image not found at Post ID: {postID}")
-                
+                photo = validateImage_HTML(folderPath, message, postID)
+                f.write(f"""
+                        <img src={photo} style="width: 260px; height: 251px"/>
+                        """)
                 text = message["text"]
                 if(text != ""):
                     if(type(text) == str):
@@ -117,36 +156,7 @@ def createHTML(folderPath, json_data):
                                     <p>{text}</p>
                                 """)
                     elif(type(text) == list):
-                        wholeText = ""
-                        for listText in text:
-                            if(listText != " "):
-                                if(type(listText) == str):
-                                    wholeText += listText
-                                elif(type(listText) == dict):
-                                    if(listText["type"] == "bold"):
-                                        wholeText+= f"""<strong>{listText["text"]}</strong>"""
-                                    elif(listText["type"] == "code"):
-                                        wholeText+= f"""<code>{listText["text"]}</code>"""
-                                    elif(listText["type"] == "italic"):
-                                        wholeText+= f"""<em>{listText["text"]}</em>"""
-                                    elif(listText["type"] == "underline"):
-                                        wholeText+= f"""<u>{listText["text"]}</u>"""
-                                    elif(listText["type"] == "strikethrough"):
-                                        wholeText+= f"""<s>{listText["text"]}</s>"""
-                                    elif(listText["type"] == "link"):
-                                        wholeText+= f"""<a href="{listText["text"]}">{listText["text"]}</a>"""
-                                    elif(listText["type"] == "text_link"):
-                                        wholeText+= f"""<a href="{listText["href"]}">{listText["text"]}</a>"""
-                                    elif(listText["type"] == "hashtag"):
-                                        wholeText+= f"""<a href="#" style="text-decoration:none">{listText["text"]} </a>"""
-                                    elif(listText["type"] == "mention"):
-                                        wholeText+= f"""<a href="https://t.me/{listText["text"][1:]}">{listText["text"]}</a>"""
-                                    elif(listText["type"] == "email"):
-                                        wholeText+= f"""<a href="mailto:{listText["text"]}">{listText["text"]}</a>"""
-                                    elif(listText["type"] == "phone"):
-                                        wholeText+= f"""<a href="tel:{listText["text"]}">{listText["text"]}</a>"""
-                        
-                        wholeText = wholeText.replace("\n", "<br>")
+                        wholeText = writeText_HTML(text)
                         f.write(f"""
                                     <p>{wholeText}</p>
                                 """)
@@ -191,7 +201,7 @@ def main(args):
     json_data = readJson(jsonPath)
 
     # html creating
-    createHTML(folderPath, json_data)
+    create_HTML(folderPath, json_data)
     
     sys.exit(0)
 
