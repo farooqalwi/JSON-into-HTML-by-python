@@ -9,7 +9,6 @@ __license__ = "MIT"
 
 
 import argparse
-from genericpath import isdir
 from logzero import logger, logfile
 import json
 import sys
@@ -50,7 +49,7 @@ def readJson(filePath):
             raise FunctionFailed from Exception
         return json_file
 
-def sortData(messages):
+def sortData(args, messages):
     """it sorts the json data, 'asc' for ascending, 
     'desc' for descending. by default sorted by 'desc'"""
     if(args.sort == "desc"):
@@ -134,11 +133,11 @@ def writeText_HTML(text):
     wholeText = wholeText.replace("\n", "<br>")
     return wholeText
 
-def create_HTML(folderPath, json_data):
+def create_HTML(args, folderPath, json_data):
     """it creates the html file from json data"""
     messages = json_data["messages"]
     # to sort order od data
-    sortData(messages)
+    sortData(args, messages)
     with open(outputFile(folderPath), 'w', encoding='utf-8') as f:
         f.write(writeBasicInfo_Chennal(json_data))
         for message in messages:
@@ -185,24 +184,31 @@ def createLog():
         dt_string = now.strftime("%Y%m%d%H%M%S")
         logfile(os.path.join("logs", f"log-{dt_string}.log"))
 
-def main(args):
+def main():
     """ Main entry point of the app """
     try:
+        createLog()
+        """ This is executed when run from the command line """ 
+        parser = argparse.ArgumentParser()
+        # Required positional argument
+        parser.add_argument("arg", help="Use for source file path, this is required.")
+        # for sorting order, 'asc' for ascending, 'desc' for descending. by default sorted by 'desc'
+        parser.add_argument("-s", dest="sort", default="desc", help="To sord post, use 'asc' for ascending, 'desc' for descending order. by default sorted by 'desc'")
+        if len(sys.argv) == 1:
+            logger.error("Source file was not provided.")
+            parser.print_help()
+            raise FunctionFailed from Exception
+        args = parser.parse_args()
         # path from cmd
         path = args.arg
-
         # folder path after validation
         folderPath = validatePath_folder(path)
-
         # json file path
         jsonPath = isExist_JSON(folderPath)
-
         # json data
         json_data = readJson(jsonPath)
-
         # html creating
-        create_HTML(folderPath, json_data)
-
+        create_HTML(args, folderPath, json_data)
         sys.exit(0)
     except FunctionFailed:
         logger.error("Program terminated unspectedly")
@@ -210,20 +216,4 @@ def main(args):
 
 
 if __name__ == "__main__":
-    """ This is executed when run from the command line """ 
-    createLog()
-    parser = argparse.ArgumentParser()
-
-    # Required positional argument
-    parser.add_argument("arg", help="Use for source file path, this is required.")
-
-    # for sorting order, 'asc' for ascending, 'desc' for descending. by default sorted by 'desc'
-    parser.add_argument("-s", dest="sort", default="desc", help="To sord post, use 'asc' for ascending, 'desc' for descending order. by default sorted by 'desc'")
-
-    if len(sys.argv) == 1:
-        logger.error("Source file was not provided.")
-        parser.print_help()
-        sys.exit(1)
-
-    args = parser.parse_args()
-    main(args)
+    main()
