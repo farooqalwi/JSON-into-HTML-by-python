@@ -7,6 +7,7 @@ __author__ = "Your Name"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
+from abc import _FuncT
 import argparse
 from genericpath import isdir
 from logzero import logger, logfile
@@ -15,24 +16,32 @@ import sys
 import os
 from datetime import datetime
 
+class FunctionFailed(Exception):
+    """We use this custom exception whenver our function fails for any reason
+    The caller will not recevie any other exception"""
+
 
 def validatePath_folder(path):
     """this function validates user given folder path, 
     incase valid path returns the path"""
-    if(os.path.isdir(path)):
-        return path
-    else:
-        logger.error("Path is not a folder")
-        sys.exit(1)
+    try:
+        if(os.path.isdir(path)):
+            return path
+        else:
+            logger.error("Path is not a folder")
+    except TypeError:
+        raise FunctionFailed from Exception
 
 def isExist_JSON(folderPath):
     """it checks either 'json' file exists or not"""
-    filePath = f"{os.path.join(folderPath, 'result.json')}"
-    if(os.path.isfile(filePath)):
-        return filePath
-    else:
-        logger.error(f"<{folderPath}> does not contain 'result.json' file")
-        sys.exit(1)
+    try:
+        filePath = f"{os.path.join(folderPath, 'result.json')}"
+        if(os.path.isfile(filePath)):
+            return filePath
+        else:
+            logger.error(f"<{folderPath}> does not contain 'result.json' file")
+    except TypeError:
+        raise FunctionFailed from Exception
 
 def readJson(filePath):
     """it reads json data, if valid json returns 
@@ -42,17 +51,19 @@ def readJson(filePath):
             json_file = json.load(f)
         except json.decoder.JSONDecodeError as err:
             logger.error(f"Invalid JSON provided <{err}>")
-            sys.exit(1)
+            raise FunctionFailed from Exception
         return json_file
     
 def sortData(messages):
     """it sorts the json data, 'asc' for ascending, 
     'desc' for descending. by default sorted by 'desc'"""
-    if(args.sort == "desc"):
-        messages.reverse()
-    elif(args.sort != "asc"):
-        logger.error("sort order mismatch")
-        sys.exit(1)
+    try:
+        if(args.sort == "desc"):
+            messages.reverse()
+        elif(args.sort != "asc"):
+            logger.error("sort order mismatch")
+    except Exception:
+        raise FunctionFailed from Exception
 
 def writeBasicInfo_Chennal(json_data):
     """it writes the chennal basic info, 
@@ -127,7 +138,6 @@ def writeText_HTML(text):
                     wholeText+= f"""<a href="tel:{listText["text"]}">{listText["text"]}</a>"""
     wholeText = wholeText.replace("\n", "<br>")
     return wholeText
-            
 
 def create_HTML(folderPath, json_data):
     """it creates the html file from json data"""
@@ -184,26 +194,29 @@ def createLog():
         dt_string = now.strftime("%Y%m%d%H%M%S")
         logfile(os.path.join("logs", f"log-{dt_string}.log"))
 
-
 def main(args):
     """ Main entry point of the app """
+    try:
+        # path from cmd
+        path = args.arg
 
-    # path from cmd
-    path = args.arg
+        # folder path after validation
+        folderPath = validatePath_folder(path)
 
-    # folder path after validation
-    folderPath = validatePath_folder(path)
+        # json file path
+        jsonPath = isExist_JSON(folderPath)
 
-    # json file path
-    jsonPath = isExist_JSON(folderPath)
+        # json data
+        json_data = readJson(jsonPath)
 
-    # json data
-    json_data = readJson(jsonPath)
+        # html creating
+        create_HTML(folderPath, json_data)
 
-    # html creating
-    create_HTML(folderPath, json_data)
-    
-    sys.exit(0)
+        sys.exit(0)
+    except FunctionFailed:
+        logger.error("Program terminated unspectedly")
+        sys.exit(1)
+
 
 
 if __name__ == "__main__":
