@@ -1,0 +1,333 @@
+{
+ "name": "TestingGroup",
+ "type": "public_supergroup",
+ "id": 1389923380,
+ "messages": [
+  {
+   "id": 6,
+   "type": "message",
+   "date": "2021-09-28T10:42:25",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains ",
+    {
+     "type": "bold",
+     "text": "bold"
+    },
+    " text:\nThe ",
+    {
+     "type": "bold",
+     "text": "U.S."
+    },
+    " is a country of ",
+    {
+     "type": "bold",
+     "text": "50 states"
+    },
+    " covering a vast swath of ",
+    {
+     "type": "bold",
+     "text": "North America"
+    },
+    ", with ",
+    {
+     "type": "bold",
+     "text": "Alaska"
+    },
+    " in the northwest and ",
+    {
+     "type": "bold",
+     "text": "Hawaii"
+    },
+    " extending the nation’s presence into the ",
+    {
+     "type": "bold",
+     "text": "Pacific Ocean"
+    },
+    "."
+   ]
+  },
+  {
+   "id": 7,
+   "type": "message",
+   "date": "2021-09-28T10:43:53",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains ",
+    {
+     "type": "italic",
+     "text": "italic"
+    },
+    " text:\nThe ",
+    {
+     "type": "italic",
+     "text": "U.S."
+    },
+    " is a country of ",
+    {
+     "type": "italic",
+     "text": "50 states"
+    },
+    " covering a vast swath of ",
+    {
+     "type": "italic",
+     "text": "North America"
+    },
+    ", with ",
+    {
+     "type": "italic",
+     "text": "Alaska"
+    },
+    " in the northwest and ",
+    {
+     "type": "italic",
+     "text": "Hawaii"
+    },
+    " extending the nation’s presence into the ",
+    {
+     "type": "italic",
+     "text": "Pacific Ocean"
+    },
+    "."
+   ]
+  },
+  {
+   "id": 9,
+   "type": "message",
+   "date": "2021-09-28T10:48:23",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains ",
+    {
+     "type": "code",
+     "text": "code"
+    },
+    ":\n",
+    {
+     "type": "code",
+     "text": "class MainClass\n{\n  public static void Main ()\n  {\n      Console.WriteLine(\"{0} {1}\", \"Hello\", \"World!\");\n  }\n}"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "message",
+   "date": "2021-09-28T10:49:28",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains ",
+    {
+     "type": "underline",
+     "text": "underlined"
+    },
+    " text:\nThe ",
+    {
+     "type": "underline",
+     "text": "U.S."
+    },
+    " is a country of ",
+    {
+     "type": "underline",
+     "text": "50 states"
+    },
+    " covering a vast swath of ",
+    {
+     "type": "underline",
+     "text": "North America"
+    },
+    ", with ",
+    {
+     "type": "underline",
+     "text": "Alaska"
+    },
+    " in the northwest and ",
+    {
+     "type": "underline",
+     "text": "Hawaii"
+    },
+    " extending the nation’s presence into the ",
+    {
+     "type": "underline",
+     "text": "Pacific Ocean"
+    },
+    "."
+   ]
+  },
+  {
+   "id": 11,
+   "type": "message",
+   "date": "2021-09-28T10:50:33",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains ",
+    {
+     "type": "strikethrough",
+     "text": "strikethrough"
+    },
+    " text:\nThe ",
+    {
+     "type": "strikethrough",
+     "text": "U.S."
+    },
+    " is a country of ",
+    {
+     "type": "strikethrough",
+     "text": "50 states"
+    },
+    " covering a vast swath of ",
+    {
+     "type": "strikethrough",
+     "text": "North"
+    },
+    " ",
+    {
+     "type": "strikethrough",
+     "text": "America"
+    },
+    ", with ",
+    {
+     "type": "strikethrough",
+     "text": "Alaska"
+    },
+    " in the northwest and ",
+    {
+     "type": "strikethrough",
+     "text": "Hawaii"
+    },
+    " extending the nation’s presence into the ",
+    {
+     "type": "strikethrough",
+     "text": "Pacific"
+    },
+    " ",
+    {
+     "type": "strikethrough",
+     "text": "Ocean"
+    },
+    "."
+   ]
+  },
+  {
+   "id": 12,
+   "type": "message",
+   "date": "2021-09-28T10:52:13",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains ",
+    {
+     "type": "text_link",
+     "text": "link",
+     "href": "https://www.codingschool.pk/"
+    },
+    ":\n",
+    {
+     "type": "text_link",
+     "text": "CodingSchool.pk",
+     "href": "https://www.codingschool.pk/"
+    },
+    " is an ongoing effort to make programming accessible to everyone and mentor the new coders."
+   ]
+  },
+  {
+   "id": 13,
+   "type": "message",
+   "date": "2021-09-28T10:59:07",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains email and phone numbers:\n\nIn case of any query regarding rescheduling, please contact at \nEmail: ",
+    {
+     "type": "email",
+     "text": "rescheduling@vu.edu.pk"
+    },
+    "\nTelephone: ",
+    {
+     "type": "phone",
+     "text": "042-99204760"
+    },
+    ", ",
+    {
+     "type": "phone",
+     "text": "042-99203899"
+    },
+    "\nWhatsApp: ",
+    {
+     "type": "phone",
+     "text": "03000656904"
+    },
+    " (Queries of Local Students)\nWhatsApp: ",
+    {
+     "type": "phone",
+     "text": "03000656908"
+    },
+    "(Queries of Overseas Students)"
+   ]
+  },
+  {
+   "id": 14,
+   "type": "message",
+   "date": "2021-09-28T11:01:01",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This paragraph contains user mention:\n\n",
+    {
+     "type": "link",
+     "text": "CodingSchool.pk"
+    },
+    " is an ongoing effort to make programming accessible to everyone and mentor the new coders.\n",
+    {
+     "type": "mention",
+     "text": "@talha131"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "type": "message",
+   "date": "2021-09-28T11:04:56",
+   "from": "Farooq Alwi",
+   "from_id": "user728521855",
+   "text": [
+    "This post contains multiple text formats:\n\n",
+    {
+     "type": "bold",
+     "text": "Unblocking Of VULMS Accounts\n"
+    },
+    {
+     "type": "italic",
+     "text": "Published On:  Tuesday, August 17, 2021\n\n"
+    },
+    {
+     "type": "strikethrough",
+     "text": "The University"
+    },
+    " has unblocked LMS Accounts of all those students having outstanding dues up to Rs. 10,000/-, in order to give relaxation during COVID-19 situation and to facilitate them for making date sheet for Spring'2021 ",
+    {
+     "type": "strikethrough",
+     "text": "(Final-Term"
+    },
+    ") Exams. For all those whose LMS Accounts are still blocked, It is advised to clear outstanding dues at the earliest or bring outstanding balance below Rs. 10,000/- to get LMS accounts unblocked.\n\n",
+    {
+     "type": "underline",
+     "text": "It is further informed that LMS Accounts of all non-paying students will be blocked after final term exams.\n\n"
+    },
+    {
+     "type": "link",
+     "text": "https://vu.edu.pk/NewsDetails.aspx?type=&NewsId=4470"
+    },
+    "\n\nA code example\n",
+    {
+     "type": "code",
+     "text": "class MainClass\n{\n  public static void Main ()\n  {\n      Console.WriteLine(\"{0} {1}\", \"Hello\", \"World!\");\n  }\n}"
+    }
+   ]
+  }
+ ]
+}

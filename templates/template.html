@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>JSON to HTML</title>
 </head>
 
 <body>
@@ -23,6 +23,53 @@
 
         {% if message.photo is defined %}
         <img src="{{message['photo']}}" style="width: 260px; height: 251px">
+        {% endif %}
+
+        {% if message.text is defined %}
+        {% if message["text"] is string %}
+        <p>{{message["text"]}}</p>
+        {% elif message["text"] is sequence %}
+        {% set whole_text = namespace(value="") %}
+        {% for list_text in message["text"] %}
+        {% if list_text is not equalto " " %}
+        {% if list_text is string %}
+        {% set whole_text.value = whole_text.value + list_text %}
+        {% elif list_text is mapping %}
+        {% if list_text["type"] is equalto "bold" %}
+        {% set whole_text.value = whole_text.value + "<strong>" + list_text["text"] + "</strong>" %}
+        {% elif list_text["type"] is equalto "code" %}
+        {% set whole_text.value = whole_text.value + "<code>" + list_text["text"] + "</code>" %}
+        {% elif list_text["type"] is equalto "italic" %}
+        {% set whole_text.value = whole_text.value + "<em>" + list_text["text"] + "</em>" %}
+        {% elif list_text["type"] is equalto "underline" %}
+        {% set whole_text.value = whole_text.value + "<u>" + list_text["text"] + "</u>" %}
+        {% elif list_text["type"] is equalto "strikethrough" %}
+        {% set whole_text.value = whole_text.value + "<s>" + list_text["text"] + "</s>" %}
+        {% elif list_text["type"] is equalto "link" %}
+        {% set whole_text.value = whole_text.value + "<a href=\"" + list_text["text"] + "\">" + list_text["text"] +
+            "</a>" %}
+        {% elif list_text["type"] is equalto "text_link" %}
+        {% set whole_text.value = whole_text.value + "<a href=\"" + list_text["href"] + "\">" + list_text["text"] +
+            "</a>" %}
+        {% elif list_text["type"] is equalto "hashtag" %}
+        {% set whole_text.value = whole_text.value + "<a href=\"#\" style=\"text-decoration:none\">" + list_text["text"]
+            + "</a>" %}
+        {% elif list_text["type"] is equalto "mention" %}
+        {% set whole_text.value = whole_text.value + "<a href=\"https://t.me/" + list_text["text"][1:] + "\">" +
+            list_text["text"] + "</a>" %}
+        {% elif list_text["type"] is equalto "email" %}
+        {% set whole_text.value = whole_text.value + "<a href=\"mailto:" + list_text["text"] + "\">" + list_text["text"]
+            + "</a>" %}
+        {% elif list_text["type"] is equalto "phone" %}
+        {% set whole_text.value = whole_text.value + "<a href=\"tel:" + list_text["text"] + "\">" + list_text["text"] +
+            "</a>" %}
+
+        {% endif %}
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        <p>{{whole_text.value|replace("\n", "<br>")}}</p>
+        {% endif %}
         {% endif %}
 
         <hr>
