@@ -8,12 +8,12 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 
-import argparse
-from logzero import logger, logfile
 import json
+import argparse
 import sys
 import os
 from datetime import datetime
+from logzero import logger, logfile
 
 
 class FunctionFailed(Exception):
@@ -21,39 +21,43 @@ class FunctionFailed(Exception):
     The caller will not recevie any other exception"""
 
 
-def validatePath_folder(path):
+def validate_path_folder(path):
     """this function validates user given folder path,
     incase valid path returns the path"""
     if os.path.isdir(path):
-        return path
+        validated_path = path
     else:
         logger.error("Path is not a folder")
         raise FunctionFailed from Exception
 
+    return validated_path
 
-def isExist_JSON(folderPath):
+
+def is_exist_json(folderpath):
     """it checks either 'json' file exists or not"""
-    filePath = f"{os.path.join(folderPath, 'result.json')}"
-    if os.path.isfile(filePath):
-        return filePath
+    filepath = f"{os.path.join(folderpath, 'result.json')}"
+    if os.path.isfile(filepath):
+        json_existed = filepath
     else:
-        logger.error(f"<{folderPath}> does not contain 'result.json' file")
+        logger.error("<%s> does not contain 'result.json' file", folderpath)
         raise FunctionFailed from Exception
 
+    return json_existed
 
-def readJson(filePath):
+
+def read_json(filepath):
     """it reads json data, if valid json returns
     the data otherwise exit the program"""
-    with open(filePath, "r", encoding="utf-8") as f:
+    with open(filepath, "r", encoding="utf-8") as file:
         try:
-            json_file = json.load(f)
+            json_file = json.load(file)
         except json.decoder.JSONDecodeError as err:
-            logger.error(f"Invalid JSON provided <{err}>")
+            logger.error("Invalid JSON provided <%s>", err)
             raise FunctionFailed from Exception
         return json_file
 
 
-def sortData(args, messages):
+def sort_data(args, messages):
     """it sorts the json data, 'asc' for ascending,
     'desc' for descending. by default sorted by 'desc'"""
     if args.sort == "desc":
@@ -63,11 +67,11 @@ def sortData(args, messages):
         raise FunctionFailed from Exception
 
 
-def writeBasicInfo_Chennal(json_data):
+def write_basic_chennal_info(json_data):
     """it writes the chennal basic info,
     i.e: chenal name, chennal type, chennal link"""
-    channelName = json_data["name"]
-    channelType = json_data["type"]
+    channel_name = json_data["name"]
+    channel_type = json_data["type"]
     return f"""
                 <!DOCTYPE html>
                 <html>
@@ -75,119 +79,127 @@ def writeBasicInfo_Chennal(json_data):
                     <title>JSON to HTML</title>
                 </head>
                 <body>
-                <h1>{channelName}</h1>
+                <h1>{channel_name}</h1>
                 <a href="https://t.me/themuslimarchive">https://t.me/themuslimarchive</a>
-                <p>{channelType}</p>
+                <p>{channel_type}</p>
             """
 
 
-def outputFile(folderPath):
+def output_file(folderpath):
     """for output file name, default file name is current
     timestamp from step 60 'output-2021-09-26 0110.html'"""
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H%M")
-    defaultFileName = f"result-{dt_string}.html"
-    outputPath = os.path.join(folderPath, defaultFileName)
-    return outputPath
+    default_file_name = f"result-{dt_string}.html"
+    output_path = os.path.join(folderpath, default_file_name)
+    return output_path
 
 
-def validateImage_HTML(folderPath, message, postID):
+def validate_image_html(folderpath, message, post_id):
     """it valliadtes images either present or not"""
+    photo_existed = ""
     if "photo" in message.keys():
         photo = message["photo"]
-        photoDir = photo[0:7]
-        if os.path.isdir(os.path.join(folderPath, photoDir)):
-            if os.path.isfile(os.path.join(folderPath, photo)):
-                return photo
+        photo_dir = photo[0:7]
+        if os.path.isdir(os.path.join(folderpath, photo_dir)):
+            if os.path.isfile(os.path.join(folderpath, photo)):
+                photo_existed = photo
             else:
-                logger.error(f"<{photo}> image not found")
+                logger.error("<%s> image not found", photo)
         else:
-            logger.error(f"<{os.path.join(folderPath, photoDir)}> directory not found")
+            logger.error(
+                "<%s> directory not found", os.path.join(folderpath, photo_dir)
+            )
             raise FunctionFailed from Exception
+
     else:
-        logger.error(f"image not found at Post ID: {postID}")
+        logger.error("image not found at Post ID: %s", post_id)
+    return photo_existed
 
 
-def writeText_HTML(text):
+def write_text_html(text):
     """it writes texts with respective formatting"""
-    wholeText = ""
-    for listText in text:
-        if listText != " ":
-            if type(listText) == str:
-                wholeText += listText
-            elif type(listText) == dict:
-                if listText["type"] == "bold":
-                    wholeText += f"""<strong>{listText["text"]}</strong>"""
-                elif listText["type"] == "code":
-                    wholeText += f"""<code>{listText["text"]}</code>"""
-                elif listText["type"] == "italic":
-                    wholeText += f"""<em>{listText["text"]}</em>"""
-                elif listText["type"] == "underline":
-                    wholeText += f"""<u>{listText["text"]}</u>"""
-                elif listText["type"] == "strikethrough":
-                    wholeText += f"""<s>{listText["text"]}</s>"""
-                elif listText["type"] == "link":
-                    wholeText += (
-                        f"""<a href="{listText["text"]}">{listText["text"]}</a>"""
+    whole_text = ""
+    for list_text in text:
+        if list_text != " ":
+            if isinstance(list_text, str):
+                whole_text += list_text
+            elif isinstance(list_text, dict):
+                if list_text["type"] == "bold":
+                    whole_text += f"""<strong>{list_text["text"]}</strong>"""
+                elif list_text["type"] == "code":
+                    whole_text += f"""<code>{list_text["text"]}</code>"""
+                elif list_text["type"] == "italic":
+                    whole_text += f"""<em>{list_text["text"]}</em>"""
+                elif list_text["type"] == "underline":
+                    whole_text += f"""<u>{list_text["text"]}</u>"""
+                elif list_text["type"] == "strikethrough":
+                    whole_text += f"""<s>{list_text["text"]}</s>"""
+                elif list_text["type"] == "link":
+                    whole_text += (
+                        f"""<a href="{list_text["text"]}">{list_text["text"]}</a>"""
                     )
-                elif listText["type"] == "text_link":
-                    wholeText += (
-                        f"""<a href="{listText["href"]}">{listText["text"]}</a>"""
+                elif list_text["type"] == "text_link":
+                    whole_text += (
+                        f"""<a href="{list_text["href"]}">{list_text["text"]}</a>"""
                     )
-                elif listText["type"] == "hashtag":
-                    wholeText += f"""<a href="#" style="text-decoration:none">{listText["text"]} </a>"""
-                elif listText["type"] == "mention":
-                    wholeText += f"""<a href="https://t.me/{listText["text"][1:]}">{listText["text"]}</a>"""
-                elif listText["type"] == "email":
-                    wholeText += f"""<a href="mailto:{listText["text"]}">{listText["text"]}</a>"""
-                elif listText["type"] == "phone":
-                    wholeText += (
-                        f"""<a href="tel:{listText["text"]}">{listText["text"]}</a>"""
+                elif list_text["type"] == "hashtag":
+                    whole_text += f"""<a href="#" style="text-decoration:none">
+                                    {list_text["text"]} </a>"""
+                elif list_text["type"] == "mention":
+                    whole_text += f"""<a href="https://t.me/
+                                    {list_text["text"][1:]}">{list_text["text"]}</a>"""
+                elif list_text["type"] == "email":
+                    whole_text += f"""<a href="mailto:
+                                    {list_text["text"]}">{list_text["text"]}</a>"""
+                elif list_text["type"] == "phone":
+                    whole_text += (
+                        f"""<a href="tel:{list_text["text"]}">{list_text["text"]}</a>"""
                     )
-    wholeText = wholeText.replace("\n", "<br>")
-    return wholeText
+    whole_text = whole_text.replace("\n", "<br>")
+    return whole_text
 
 
-def create_HTML(args, folderPath, json_data):
+def create_html(args, folderpath, json_data):
     """it creates the html file from json data"""
     messages = json_data["messages"]
     # to sort order od data
-    sortData(args, messages)
-    with open(outputFile(folderPath), "w", encoding="utf-8") as f:
-        f.write(writeBasicInfo_Chennal(json_data))
+    sort_data(args, messages)
+    with open(output_file(folderpath), "w", encoding="utf-8") as file:
+        file.write(write_basic_chennal_info(json_data))
         for message in messages:
-            postID = message["id"]
-            postDate = message["date"]
-            f.write(
+            post_id = message["id"]
+            post_date = message["date"]
+            file.write(
                 f"""
                     <hr>
-                    <h2>Date: {postDate}</h2>
-                    <p>id: {postID}</p>
+                    <h2>Date: {post_date}</h2>
+                    <p>id: {post_id}</p>
                     """
             )
-            photo = validateImage_HTML(folderPath, message, postID)
+            photo = validate_image_html(folderpath, message, post_id)
             if photo is not None:
-                f.write(
+                file.write(
                     f"""
                         <img src={photo} style="width: 260px; height: 251px"/>
                         """
                 )
             text = message["text"]
             if text != "":
-                if type(text) == str:
-                    f.write(
+                if isinstance(text, str):
+                    file.write(
                         f"""
                                 <p>{text}</p>
                             """
                     )
-                elif type(text) == list:
-                    wholeText = writeText_HTML(text)
-                    f.write(
+                elif isinstance(text, list):
+                    whole_text = write_text_html(text)
+                    file.write(
                         f"""
-                                <p>{wholeText}</p>
+                                <p>{whole_text}</p>
                             """
                     )
-        f.write(
+        file.write(
             """
                     </body>
                 </html>
@@ -196,7 +208,7 @@ def create_HTML(args, folderPath, json_data):
     logger.info("HTML file created")
 
 
-def createLog():
+def create_log():
     """it creates log file, default file name is current timestamp
     "log-20210928220001.log" year month date hour minute seconds"""
     if not os.path.isdir("logs"):
@@ -214,8 +226,7 @@ def createLog():
 def main():
     """ Main entry point of the app """
     try:
-        createLog()
-        """ This is executed when run from the command line """
+        create_log()
         parser = argparse.ArgumentParser()
         # Required positional argument
         parser.add_argument("arg", help="Use for source file path, this is required.")
@@ -224,7 +235,8 @@ def main():
             "-s",
             dest="sort",
             default="desc",
-            help="To sord post, use 'asc' for ascending, 'desc' for descending order. by default sorted by 'desc'",
+            help="""To sord post, use 'asc' for ascending,
+                    'desc' for descending order. by default sorted by 'desc'""",
         )
         if len(sys.argv) == 1:
             logger.error("Source file was not provided.")
@@ -234,13 +246,13 @@ def main():
         # path from cmd
         path = args.arg
         # folder path after validation
-        folderPath = validatePath_folder(path)
+        folderpath = validate_path_folder(path)
         # json file path
-        jsonPath = isExist_JSON(folderPath)
+        json_path = is_exist_json(folderpath)
         # json data
-        json_data = readJson(jsonPath)
+        json_data = read_json(json_path)
         # html creating
-        create_HTML(args, folderPath, json_data)
+        create_html(args, folderpath, json_data)
         sys.exit(0)
     except FunctionFailed:
         logger.error("Program terminated unspectedly")

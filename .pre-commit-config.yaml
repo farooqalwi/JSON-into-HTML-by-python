@@ -7,3 +7,10 @@ repos:
     hooks:
     -   id: check-hooks-apply
     -   id: check-useless-excludes
+-   repo: local
+    hooks:
+    -   id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
