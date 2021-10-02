@@ -9,11 +9,8 @@
 <body>
     <h1>Chennal Title: {{content.name}}</h1>
     <h2>Chennal ID: {{content.id}}</h2>
-
     {% for message in content["messages"] %}
-
     <h2>Posts ID: {{message["id"]}}</h2>
-
     {% endfor %}
 </body>
 </html>
