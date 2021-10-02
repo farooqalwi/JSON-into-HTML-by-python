@@ -14,6 +14,7 @@ import sys
 import os
 from datetime import datetime
 from logzero import logger, logfile
+from jinja2 import Environment, FileSystemLoader
 
 
 class FunctionFailed(Exception):
@@ -222,6 +223,17 @@ def create_html(args, folderpath, json_data):
     logger.info("HTML file created")
 
 
+def create_html_with_jinja(json_data):
+    """it creates the html file from json data by using jinja"""
+    file_loader = FileSystemLoader("templates")
+    env = Environment(loader=file_loader)
+    rendered = env.get_template("template.html").render(content=json_data)
+
+    # write html to a file - index.html in root folder
+    with open("index.html", "w", encoding="utf-8") as file:
+        file.write(rendered)
+
+
 def create_log():
     """it creates log file, default file name is current timestamp
     "log-20210928220001.log" year month date hour minute seconds"""
@@ -267,6 +279,8 @@ def main():
         json_data = read_json(json_path)
         # html creating
         create_html(args, folderpath, json_data)
+        # html creating by using jinja
+        create_html_with_jinja(json_data)
         sys.exit(0)
     except FunctionFailed:
         logger.error("Program terminated unspectedly")
