@@ -1,0 +1,1 @@
+negative test without photos folder

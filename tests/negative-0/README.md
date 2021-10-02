@@ -1,0 +1,1 @@
+invalid `result.json` for negative test
