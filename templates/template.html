@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <h1>Chennal Title: {{content.name}}</h1>
-    <h2>Chennal ID: {{content.id}}</h2>
-    {% for message in content["messages"] %}
-    <h2>Posts ID: {{message["id"]}}</h2>
-    {% endfor %}
+    <header>
+        <h1>Chennal Title: {{content.name}}</h1>
+        <a href="https://t.me/themuslimarchive">https://t.me/themuslimarchive</a>
+        <h3>Chennal ID: {{content.type}}</h3>
+        <hr>
+    </header>
+
+    <section>
+        {% for message in messages %}
+        <h2>Date: {{message["date"]}} </h2>
+        <p>Post ID: {{message["id"]}} </p>
+
+        {% if message.photo is defined %}
+        <img src="{{message['photo']}}" style="width: 260px; height: 251px">
+        {% endif %}
+
+        <hr>
+        {% endfor %}
+    </section>
 </body>
+
 </html>
