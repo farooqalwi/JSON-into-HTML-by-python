@@ -1,0 +1,1 @@
+empty `result.json` for negative test

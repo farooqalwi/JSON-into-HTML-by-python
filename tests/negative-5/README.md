@@ -1,0 +1,1 @@
+negative test with incomplete photos (json has marked that photo exists in this post but folder does not have that image)

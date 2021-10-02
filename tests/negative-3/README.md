@@ -1,0 +1,1 @@
+negative test with empty photos folder although json has photos marked
