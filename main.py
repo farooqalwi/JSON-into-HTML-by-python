@@ -19,7 +19,7 @@ from jinja2 import Environment, FileSystemLoader
 
 class FunctionFailed(Exception):
     """We use this custom exception whenver our function fails for any reason
-    The caller will not recevie any other exception"""
+    The caller will not receive any other exception"""
 
 
 def validate_path_folder(path):
